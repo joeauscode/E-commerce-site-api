@@ -39,7 +39,11 @@ print(SECRET_KEY)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+print("ALLOWED_HOSTS =", ALLOWED_HOSTS)
+
+
 
 CORS_ALLOW_ALL_ORIGINS = True  # or use CORS_ALLOWED_ORIGINS for more control
 CORS_ALLOW_CREDENTIALS = True
