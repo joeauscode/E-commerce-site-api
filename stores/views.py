@@ -7,6 +7,11 @@ from .serializers import *
 from .models import *
 from django.db import transaction
 from rest_framework.permissions import AllowAny
+from .serializers import SimpleCartProductSerializer
+
+
+
+
 
 
 
@@ -88,11 +93,9 @@ class ProductView(APIView):
 
 
 
-
-
-
 class AddToCartView(APIView):
     permission_classes = [AllowAny] 
+
     def post(self, request, id):
         try:
             product = get_object_or_404(Product, id=id)
@@ -116,14 +119,14 @@ class AddToCartView(APIView):
 
                         cart.total += price
                         cart.save()
-                        return Response({'message': 'item increased in cart'})
+                        return Response({'message': 'item increased in cart', 'cart_id': cart.id})
                     else:
                         cartproduct = CartProduct.objects.create(
                             cart=cart, product=product, quantity=1, price=price, total=price
                         )
                         cart.total += price
                         cart.save()
-                        return Response({'message': 'item added to cart'})
+                        return Response({'message': 'item added to cart', 'cart_id': cart.id})
                 else:
                     cart = Cart.objects.create(total=0)
                     request.session['cart_id'] = cart.id
@@ -132,13 +135,14 @@ class AddToCartView(APIView):
                     )
                     cart.total += price
                     cart.save()
-                    return Response({'message': 'new item added to cart'})
+                    return Response({'message': 'new item added to cart', 'cart_id': cart.id})
         except Exception as e:
             return Response({'errors': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
 
 
-   
+
+# views.py
+
 
 class MyCartView(APIView):
     permission_classes = [AllowAny]
@@ -148,35 +152,18 @@ class MyCartView(APIView):
             cart_id = request.session.get('cart_id', None)
             if cart_id:
                 cart = get_object_or_404(Cart, id=cart_id)
-                serializer = CartSerializer(cart)  # pass instance, not class
+                cart_products = CartProduct.objects.filter(cart=cart)
+                serializer = SimpleCartProductSerializer(cart_products, many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)
-            return Response({'message':'cart not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'message': 'cart not found'}, status=status.HTTP_404_NOT_FOUND)
+            
         except Exception as e:
+            print("Error in MyCartView:", str(e))
             return Response({'errors': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
 
-
-
-# class UserCartAPIView(APIView):
-#     permission_classes = [IsAuthenticated]
-
-#     def get(self, request):
-#         user = request.user
-#         try:
-#             cart = Cart.objects.get(account=user)
-#         except Cart.DoesNotExist:
-#             return Response({"detail": "No active cart found"}, status=404)
-
-#         cart_products = CartProduct.objects.filter(cart=cart)
-#         serializer = CartProductSerializer(cart_products, many=True, context={'request': request})
-
-#         return Response({
-#             "cart_id": cart.id,
-#             "total": cart.total,
-#             "products": serializer.data
-#         })
 
 
 
