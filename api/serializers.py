@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import Account
-# from .utils import SendMail
+from .utils import SendMail
 from django.contrib.sites.shortcuts import get_current_site
 
 
@@ -78,6 +78,12 @@ class RegistrationSerializer(serializers.ModelSerializer):
         )
 
         fullname = f"{account.first_name} {account.last_name}"
-        # SendMail(email, fullname)
+
+        SendMail(email, fullname)
+ 
 
         return account
+    
+   
+   
+   

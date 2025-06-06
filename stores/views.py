@@ -7,7 +7,11 @@ from .serializers import *
 from .models import *
 from django.db import transaction
 from rest_framework.permissions import AllowAny
-from rest_framework.permissions import IsAuthenticated
+
+
+
+
+# from rest_framework.permissions import IsAuthenticated
 
 
 # Create your views here.
@@ -74,55 +78,8 @@ class ProductView(APIView):
         products = Product.objects.filter(is_active=True)
         serializer = ProductSerializer(products, many=True, context={'request': request})
         return Response(serializer.data)
-
-# class ProductView(APIView):
-#     def post(self, request):
-#         try:
-#             serializer = ProductSerializer(data=request.data)
-#             if serializer.is_valid():
-#                 serializer.save()
-#                 return Response(serializer.data, status=status.HTTP_201_CREATED)
-#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#         except Exception as e:
-#             return Response({"errors": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-#     def get(self, request):
-#         try:
-#             products = Product.objects.all()
-#             serializer = ProductSerializer(products, many=True, context={'request': request})
-#             return Response(serializer.data, status=status.HTTP_200_OK)
-#         except Exception as e:
-#             return Response({"errors": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-# class ProductDetailsView(APIView):
-#     def get(self, request, id):
-#         try:
-#             product = get_object_or_404(Product, id=id)
-#             serializer = ProductSerializer(product, context={'request': request})
-#             return Response(serializer.data, status=status.HTTP_200_OK)
-#         except Exception as e:
-#             return Response({"errors": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-#     def put(self, request, id):
-#         try:
-#             product = get_object_or_404(Product, id=id)
-#             serializer = ProductSerializer(product, partial=True, data=request.data)
-#             if serializer.is_valid():
-#                 serializer.save()
-#                 return Response(serializer.data, status=status.HTTP_200_OK)
-#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#         except Exception as e:
-#             return Response({"errors": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-#     def delete(self, request, id):
-#         try:
-#             product = get_object_or_404(Product, id=id)
-#             product.delete()
-#             return Response({"message": "Product deleted"}, status=status.HTTP_200_OK)
-#         except Exception as e:
-#             return Response({"errors": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+    
+    
 
 
 
@@ -185,6 +142,7 @@ class AddToCartView(APIView):
 
 class MyCartView(APIView):
     permission_classes = [AllowAny]
+
     def get(self, request):
         try:
             cart_id = request.session.get('cart_id', None)
@@ -219,3 +177,7 @@ class MyCartView(APIView):
 #             "total": cart.total,
 #             "products": serializer.data
 #         })
+
+
+
+

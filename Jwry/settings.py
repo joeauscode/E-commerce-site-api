@@ -10,17 +10,18 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 import os
-from dotenv import load_dotenv
 
+from pathlib import Path
+BASE_DIR = Path(__file__).resolve().parent.parent
+from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
-from pathlib import Path
 
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -33,17 +34,18 @@ print(SECRET_KEY)
 
 
 
+
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = True  # or use CORS_ALLOWED_ORIGINS for more control
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://geochain.app',
-    'http://localhost:5173',
+    'http://localhost:5173',  # your frontend dev server
 ]
 
 # Application definition
@@ -61,7 +63,10 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'stores.apps.StoresConfig',
 
+
 ]
+
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -73,6 +78,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
 
 # SESSION_COOKIE_HTTPONLY = False  # Optional: Allows JS to access cookies if needed
 # SESSION_COOKIE_SAMESITE = 'Lax'  # Or 'None' if you use cross-site requests (with HTTPS)
@@ -144,14 +151,33 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'  # For collectstatic in production
 
-STATICFILES_DIRS = [BASE_DIR / 'static']  # For development
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+
+# Whitenoise storage for compressed static files (good for production)
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+
+# STATIC_URL = '/static/'
+# STATIC_ROOT = BASE_DIR / 'staticfiles'  # For collectstatic in production
+
+# STATICFILES_DIRS = [BASE_DIR / 'static']  # For development
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# STATICFILES_DIRS = [
+#     BASE_DIR / "static",
+# ]
+
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = BASE_DIR / 'media'
+
 
 
 # Default primary key field type
@@ -179,4 +205,33 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
 }
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.getenv('EMAIL_HOST')  
+EMAIL_PORT = int(os.getenv('EMAIL_PORT')) 
+EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL') == 'True' 
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')  
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')  
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  
+
+print("EMAIL_BACKEND =", EMAIL_BACKEND)
+print("EMAIL_HOST =", EMAIL_HOST)
+print("EMAIL_PORT =", EMAIL_PORT)
+print("EMAIL_USE_SSL =", EMAIL_USE_SSL)
+print("EMAIL_HOST_USER =", EMAIL_HOST_USER)
+print("EMAIL_HOST_PASSWORD =", EMAIL_HOST_PASSWORD)
+print("DEFAULT_FROM_EMAIL =", DEFAULT_FROM_EMAIL)
+
+
+
+
+
+# # Environment variable for test mode
+# PAYPAL_TEST = os.getenv('PAYPAL_TEST')  
+# print(PAYPAL_TEST)
+
+# # Environment variable for receiver email
+# PAY_RECEIVER_EMAIL = os.getenv('PAY_RECEIVER_EMAIL')
+# print(PAY_RECEIVER_EMAIL)
 
