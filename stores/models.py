@@ -36,7 +36,6 @@ class Product(models.Model):
     photoFour  = models.ImageField(upload_to='store', null=True, blank=True)
     is_active = models.BooleanField(default=True)
     in_stock = models.IntegerField()
-    # product_id = models.UUIDField(unique=True, null=True, blank=True)
     product_id = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     created = models.DateField(auto_now_add=True)
 
@@ -57,11 +56,11 @@ class Product(models.Model):
 
 class Cart(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True)
-    total = models.PositiveIntegerField()
+    total = models.DecimalField(max_digits=9, decimal_places=2)
     created = models.DateField(auto_now_add=True)
     
     def __str__(self):
-        return f'{self.account.username} - {str(self.total)}'
+        return f'Cart - {str(self.total)}'
 
 
 # cartProduct model
@@ -71,9 +70,7 @@ class CartProduct(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
     price = models.DecimalField(max_digits=9, decimal_places=2)
-    Amout = models.PositiveIntegerField()
-    total = models.PositiveIntegerField()
-    # remove = models.deletion()
+    total = models.DecimalField(max_digits=9, decimal_places=2)
     created = models.DateField(auto_now_add=True)
 
     def __str__(self):
@@ -97,7 +94,7 @@ class OrderProduct(models.Model):
     phone = models.CharField(max_length=12)
     email = models.EmailField()
     amount = models.PositiveIntegerField()
-    total = models.PositiveIntegerField()
+    total = models.DecimalField(max_digits=9, decimal_places=2)
     orderstatus = models.CharField(choices=ORDER_STATUS, default='pending')
     payment_method = models.CharField(choices=PAYMENT_METHOD, default='paypal')
     complete = models.BooleanField(default=False)
@@ -105,14 +102,25 @@ class OrderProduct(models.Model):
 
     def __str__(self):
         return f'{self.amount} - {str(self.id)}'
-    
-    def save(self, *args, **kwargs):
-        while not self.ref:
+
+def save(self, *args, **kwargs):
+    if not self.ref:
+        while True:
             ref = secrets.token_urlsafe(50)
-            obj_with_sm_ref = OrderProduct.filter(ref = ref).exists()
-            if not obj_with_sm_ref:
+            if not OrderProduct.objects.filter(ref=ref).exists():
                 self.ref = ref
-            super().save(*args, **kwargs)
+                break
+    super().save(*args, **kwargs)
+
+
+
+    # def save(self, *args, **kwargs):
+    #     while not self.ref:
+    #         ref = secrets.token_urlsafe(50)
+    #         obj_with_sm_ref = OrderProduct.filter(ref = ref).exists()
+    #         if not obj_with_sm_ref:
+    #             self.ref = ref
+    #         super().save(*args, **kwargs)
 
     # amount from cent/kobo to naira or dollars
 

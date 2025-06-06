@@ -9,10 +9,7 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = '__all__'
         
-#class ProductSerializer(serializers.ModelSerializer):
-  #  class Meta:
- #       model = Product
-  #      fields = '__all__'
+
 
 class ProductSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(read_only=True)
@@ -40,17 +37,25 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 
-    
 
-class CartSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Cart
-        fields = '__all__'
 
 class CartProductSerializer(serializers.ModelSerializer):
+    product = ProductSerializer(read_only=True)
+
     class Meta:
         model = CartProduct
         fields = '__all__'
+
+
+class CartSerializer(serializers.ModelSerializer):
+    products = CartProductSerializer(source='cartproduct_set', many=True, read_only=True)
+    # 'cartproduct_set' is the default reverse related name unless you set related_name in FK
+
+    class Meta:
+        model = Cart
+        fields = ['id', 'total', 'created', 'account', 'products']
+
+
 
 class OrderProductSerializer(serializers.ModelSerializer):
     class Meta:
@@ -62,3 +67,4 @@ class CheckoutSerializer(serializers.ModelSerializer):
         model = OrderProduct
         fields = '__all__'
         exclude = ['cart', 'amount', 'orderstatus', 'ref', 'total', 'complete']
+
