@@ -36,17 +36,19 @@ print(SECRET_KEY)
 
 
 
-# SECURITY WARNING: don't run with debug turned on in production!
+
 DEBUG = True
+ALLOWED_HOSTS = ['naomihowardcrystalgems.art', 'www.naomihowardcrystalgems.art','localhost', '127.0.0.1']
+# ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'naomihowardcrystalgems.art', 'www.naomihowardcrystalgems.art', 'e-commerce-site-api-d7r0.onrender.com']
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'e-commerce-site-api-d7r0.onrender.com']
 
-# CORS_ALLOW_ALL_ORIGINS = True  # or use CORS_ALLOWED_ORIGINS for more control
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     'http://localhost:5173',
+    'http://naomihowardcrystalgems.art',
+    'http://www.naomihowardcrystalgems.art',
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -54,7 +56,9 @@ CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5173',  # your frontend dev server
-    'https://e-commerce-site-api-d7r0.onrender.com'
+    'https://e-commerce-site-api-d7r0.onrender.com',
+    'https://naomihowardcrystalgems.art',
+    'https://www.naomihowardcrystalgems.art',
 ]
 
 # Application definition
@@ -159,33 +163,36 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = '/static/'
+# STATIC_URL = '/static/'
 
+# STATIC_ROOT = BASE_DIR / 'staticfiles'
+# STATICFILES_DIRS = [
+#     BASE_DIR / 'static',
+# ]
+
+# # Whitenoise storage for compressed static files (good for production)
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = BASE_DIR / 'media'
+
+
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = '/backend/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
-
-# Whitenoise storage for compressed static files (good for production)
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-
-MEDIA_URL = '/media/'
+# Media files
+MEDIA_URL = '/backend/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 
-# STATIC_URL = '/static/'
-# STATIC_ROOT = BASE_DIR / 'staticfiles'  # For collectstatic in production
 
-# STATICFILES_DIRS = [BASE_DIR / 'static']  # For development
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# STATICFILES_DIRS = [
-#     BASE_DIR / "static",
-# ]
-
-# MEDIA_URL = '/media/'
-# MEDIA_ROOT = BASE_DIR / 'media'
 
 
 
