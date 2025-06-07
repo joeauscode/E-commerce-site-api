@@ -38,7 +38,7 @@ print(SECRET_KEY)
 
 
 DEBUG = True
-ALLOWED_HOSTS = ['naomihowardcrystalgems.art', 'www.naomihowardcrystalgems.art','localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['naomihowardcrystalgems.art', 'www.naomihowardcrystalgems.art','localhost', '127.0.0.1', 'e-commerce-site-api-d7r0.onrender.com']
 # ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'naomihowardcrystalgems.art', 'www.naomihowardcrystalgems.art', 'e-commerce-site-api-d7r0.onrender.com']
 
 
